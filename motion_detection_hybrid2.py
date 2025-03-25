@@ -341,13 +341,13 @@ class SimpleTracker:
 
 
 def main():
-    video_path = 'motion_detection/vid.mp4'
+    video_path = 'vid.mp4'
     video_cap = cv2.VideoCapture(video_path)
 
     # YOLO model paths
-    weights_path = 'motion_detection/yolov4.weights'  # Path to YOLO weights file
-    config_path = 'motion_detection/yolov4.cfg'       # Path to YOLO config file
-    names_path = 'motion_detection/coco.names'             # Path to class names file
+    weights_path = 'yolov4.weights'  # Path to YOLO weights file
+    config_path = 'yolov4.cfg'       # Path to YOLO config file
+    names_path = 'coco.names'             # Path to class names file
     
     # Parameters
     CONFIDENCE_THRESHOLD = 0.3  # Minimum confidence for YOLO detections

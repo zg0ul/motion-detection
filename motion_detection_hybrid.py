@@ -227,7 +227,7 @@ class SimpleTracker:
 
 
 def main():
-    video_path = 'motion_detection/vid.mp4'
+    video_path = 'vid.mp4'
     video_cap = cv2.VideoCapture(video_path)
 
     # Parameters
