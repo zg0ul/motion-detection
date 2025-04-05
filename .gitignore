@@ -2,4 +2,5 @@ yolov4.weights
 yolov4.cfg
 coco.names
 tempCodeRunnerFile.py
-*.pt
+intrusions
+logs

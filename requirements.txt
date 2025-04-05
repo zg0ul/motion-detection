@@ -1,6 +1,7 @@
-imutils==0.5.4
 numpy==1.25.2
 opencv_python==4.11.0.86
 opencv_python_headless==4.10.0.84
+PyYAML==6.0.2
+Shapely==2.1.0
 torch==2.6.0
 ultralytics==8.3.86
