@@ -7,8 +7,6 @@ import sys
 # Ensure lib directory is in the path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import our main class
-
 
 def main():
     """Main entry point for YOLOv11 Zone Intrusion Detection"""
@@ -19,7 +17,7 @@ def main():
     parser.add_argument("--config", type=str, default=None,
                         help="Path to configuration file")
     parser.add_argument(
-        "--model", type=str, default="models/yolo11n.pt", help="Path to YOLOv11 model file")
+        "--model", type=str, default="models/yolo11n.pt", help="Path to model file")
 
     args = parser.parse_args()
 
