@@ -2,6 +2,9 @@
 
 This branch provides a simplified version of the motion detection system that uses only YOLOv9 for object detection, without motion detection fallback.
 
+![Intrusions Screenshot](outputs/intrustions.png)
+![No Intrustions Screenshot](outputs/no_intrustions.jpeg)
+
 ## Features
 
 - YOLOv9 object detection with zone intrusion alerts
