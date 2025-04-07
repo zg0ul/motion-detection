@@ -45,8 +45,8 @@ motion_detection/
 1. Clone the repository
 
    ```
-   git clone https://github.com/yourusername/zone-intrusion-detection.git
-   cd zone-intrusion-detection
+   git clone git@github.com:zg0ul/motion-detection.git
+   cd motion-detection
    ```
 
 2. Set up a Python virtual environment (recommended)
