@@ -1,18 +1,15 @@
-# YOLOv11 Zone Intrusion Detection System
+# YOLOv9 Zone Intrusion Detection
 
-A computer vision-based intrusion detection system that uses YOLOv11 object detection and implements zone-based alerting for security monitoring.
-
-![Demo Screenshot](static.png)
+This branch provides a simplified version of the motion detection system that uses only YOLOv9 for object detection, without motion detection fallback.
 
 ## Features
 
-- **Region of Interest (ROI) Detection**: Optimized object detection that only processes within user-defined zones
-- **Multiple Detection Methods**: YOLOv11 object detection with motion detection fallback
-- **Real-time Tracking**: Tracks objects across video frames with unique IDs
-- **Zone-based Intrusion Alerts**: Define restricted zones and get alerts when objects enter
-- **Logging & Reporting**: CSV and YAML logging of intrusion events with timestamps
-- **Automatic Screenshots**: Captures images when intrusions are detected
-- **Interactive UI**: Real-time visualization with status information
+- YOLOv9 object detection with zone intrusion alerts
+- Object tracking with SimpleTracker
+- Zone definition for monitoring specific areas
+- Intrusion logging and alert system
+- CSV and YAML export of detection data
+- Screenshots of intrusion events
 
 ## Project Structure
 
@@ -25,8 +22,7 @@ motion_detection/
 │   │   ├── intrusion_detector.py
 │   │   └── zone_manager.py
 │   ├── detectors/        # Detection algorithms
-│   │   ├── yolo_detector.py
-│   │   └── motion_detector.py
+│   │   └── yolo_detector.py
 │   ├── trackers/         # Object tracking
 │   │   └── simple_tracker.py
 │   ├── ui/               # Visualization
@@ -63,42 +59,33 @@ motion_detection/
 
 ## Requirements
 
-Main dependencies include:
-
-- OpenCV (cv2)
-- Ultralytics (YOLO)
-- NumPy
-- Shapely (for polygon operations)
-- PyYAML (for configuration)
+See requirements.txt for dependencies.
 
 ## Usage
 
-### Basic Usage
-
-Run the detector with default settings (using webcam):
-
-```
-python detect.py
+```bash
+python detect.py --source 0 --model models/yolov9-s-converted.pt --conf 0.3
 ```
 
-### Command Line Options
+### Command Line Arguments
 
-```
-python detect.py --source <VIDEO_SOURCE> --config <CONFIG_PATH> --model <MODEL_PATH>
-```
+- `--source` - Video source (0 for webcam, or video file path)
+- `--model` - Path to YOLOv9 model file
+- `--conf` - Confidence threshold (0-1)
+- `--config` - Path to optional configuration file
 
-- `--source`: Video source (0 for webcam, or path to video file)
-- `--config`: Path to configuration file (optional)
-- `--model`: Path to YOLOv11 model file (default: models/yolo11n.pt)
+## Controls
 
-### Interactive Controls
+- Press 'q' to quit
+- Press 's' to save zone configuration
 
-During operation, the following keyboard controls are available:
+## Supported Models
 
-- `q` or `ESC`: Quit the application
-- `d`: Toggle between YOLO detection and motion detection
-- `r`: Reset background model (for motion detection)
-- `s`: Save current configuration to file
+This branch supports YOLOv9 models included in the repository:
+
+- yolov9-s-converted.pt (default)
+- yolov9-m-converted.pt
+- yolov9-t-converted.pt
 
 ## Zone Definition
 

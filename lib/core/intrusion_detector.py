@@ -11,7 +11,6 @@ import numpy as np
 from lib.utils.logger import setup_logging, get_log_manager
 from lib.utils.config import load_config, save_config
 from lib.detectors.yolo_detector import YOLODetector
-from lib.detectors.motion_detector import MotionDetector
 from lib.trackers.simple_tracker import SimpleTracker
 from lib.core.zone_manager import ZoneManager
 from lib.ui.visualizer import Visualizer
@@ -25,13 +24,12 @@ class IntrusionDetector:
         self.log_dir = self.log_manager.get_log_dir()
         self.run_id = self.log_manager.get_run_id()
 
-        self.logger.info("IntrusionDetector initializing...")
+        self.logger.info("YOLOv9 Intrusion Detector initializing...")
 
         # Configuration
-        self.confidence_threshold = 0.3
+        self.confidence_threshold = 0.4  # confidence threshold for detections
         self.alert_cooldown = 5  # seconds
         self.last_alert_time = 0
-        self.is_detector_enabled = True
 
         # Camera
         self.cap = None
@@ -41,7 +39,6 @@ class IntrusionDetector:
         # Initialize components
         self.zone_manager = ZoneManager()
         self.yolo_detector = None
-        self.motion_detector = MotionDetector()
         self.tracker = SimpleTracker()
         self.visualizer = Visualizer()
 
@@ -89,7 +86,7 @@ class IntrusionDetector:
                 f"Created default configuration at {new_config_path}")
 
         if config:
-            self.confidence_threshold = config.get('confidence_threshold', 0.3)
+            self.confidence_threshold = config.get('confidence_threshold', 0.4)
             self.alert_cooldown = config.get('alert_cooldown', 5)
 
             # Load predefined zone if available
@@ -218,7 +215,7 @@ class IntrusionDetector:
             if not success:
                 return
 
-        self.logger.info("Starting zone intrusion detection...")
+        self.logger.info("Starting YOLOv9 zone intrusion detection...")
 
         while True:
             ret, frame = self.cap.read()
@@ -231,27 +228,15 @@ class IntrusionDetector:
             # Create ROI mask for detection
             roi_mask = self.zone_manager.create_roi_mask(frame)
 
-            # Detect objects - only in ROI if mask is provided
+            # Detect objects using YOLOv9
             detections = []
-            if self.is_detector_enabled and self.yolo_detector and self.yolo_detector.model is not None:
+            if self.yolo_detector and self.yolo_detector.model is not None:
                 try:
                     # Only detect within the ROI
                     detections = self.yolo_detector.detect_objects(
                         frame, roi_mask)
-                    if not detections:
-                        # Fall back to motion detection if YOLO finds nothing
-                        motion_detections = self.motion_detector.detect_motion(
-                            frame)
-                        detections.extend(motion_detections)
                 except Exception as e:
-                    self.logger.error(f"Detection error: {e}")
-                    motion_detections = self.motion_detector.detect_motion(
-                        frame)
-                    detections.extend(motion_detections)
-            else:
-                # Use motion detection as fallback
-                motion_detections = self.motion_detector.detect_motion(frame)
-                detections.extend(motion_detections)
+                    self.logger.error(f"YOLOv9 detection error: {e}")
 
             # Update tracking
             detections = self.tracker.update(detections)
@@ -278,35 +263,23 @@ class IntrusionDetector:
                 frame_vis, detections, intruders)
 
             # Add status info
-            detector_status = " - YOLO DETECTION" if self.is_detector_enabled else " - MOTION DETECTION"
-            status_text = "Status: SECURE" if is_secure else f"Status: ⚠️ INTRUSION DETECTED ({len(intruders)})"
+            status_text = "Status: SECURE" if is_secure else f"Status: INTRUSION DETECTED ({len(intruders)})"
             frame_vis = self.visualizer.add_status_info(
-                frame_vis, status_text, is_secure, detector_status)
+                frame_vis, status_text, is_secure, " - YOLOv9 DETECTION")
 
             # Add timestamp and help text
             frame_vis = self.visualizer.add_timestamp(frame_vis)
-            help_text = "Press 'q' to quit, 'd' to toggle detection, 'r' to reset background, 's' to save config"
+            help_text = "Press 'q' to quit, 's' to save config"
             frame_vis = self.visualizer.add_help_text(frame_vis, help_text)
 
             # Display the frame
-            cv2.imshow("Zone Intrusion Detection", frame_vis)
+            cv2.imshow("YOLOv9 Zone Intrusion Detection", frame_vis)
 
             # Process keyboard input
             key = cv2.waitKey(1) & 0xFF
 
-            # Toggle detection with 'd'
-            if key == ord('d'):
-                self.is_detector_enabled = not self.is_detector_enabled
-                status = "enabled" if self.is_detector_enabled else "disabled"
-                self.logger.info(f"Object detection {status}")
-
-            # Reset background subtractor with 'r'
-            elif key == ord('r'):
-                self.motion_detector.reset()
-                self.logger.info("Background model reset")
-
             # Save config with 's'
-            elif key == ord('s'):
+            if key == ord('s'):
                 self.save_config("zone_config.yaml")
                 self.logger.info("Configuration saved")
 
