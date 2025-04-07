@@ -2,7 +2,8 @@
 
 A computer vision-based intrusion detection system that uses YOLOv11 object detection and implements zone-based alerting for security monitoring.
 
-![Demo Screenshot](static.png)
+![Intrustions Screenshot](outputs/intrusions.jpeg)
+![No Intrustions Screenshot](outputs/no_intrusions.jpeg)
 
 ## Features
 
